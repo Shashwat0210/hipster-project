@@ -1,15 +1,37 @@
 <?php
 
+use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Auth\CustomerAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:admin')->group(function () {
     Route::get('/admin/dashboard', function () {
-        return 'Admin Dashboard';
+        return view('admin.dashboard');
     });
 });
 
 Route::middleware('auth:customer')->group(function () {
     Route::get('/customer/dashboard', function () {
-        return 'Customer Dashboard';
+        return view('customer.dashboard');
     });
+});
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login']);
+    Route::get('/register', [AdminAuthController::class, 'showRegister']);
+    Route::post('/register', [AdminAuthController::class, 'register']);
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('auth:admin');
+});
+
+    Route::prefix('customer')->group(function () {
+        Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('customer.login');
+        Route::post('/login', [CustomerAuthController::class, 'login']);
+        Route::get('/register', [CustomerAuthController::class, 'showRegister']);
+        Route::post('/register', [CustomerAuthController::class, 'register']);
+        Route::post('/logout', [CustomerAuthController::class, 'logout'])->middleware('auth:customer');
 });

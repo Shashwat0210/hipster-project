@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,10 @@ Route::middleware('auth:customer')->group(function () {
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
+
+Route::middleware('auth:admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('products', ProductController::class);
+});
 
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');

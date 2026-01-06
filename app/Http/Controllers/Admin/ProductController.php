@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -83,6 +85,23 @@ class ProductController extends Controller
             $product->delete();
 
             return redirect()->route('admin.products.index');
+        }
+
+        public function show()
+        {
+            return view('admin.products.import');
+        }
+
+        public function import(Request $request)
+        {
+            $request->validate([
+                'file' => ['required', 'file', 'mimes:csv,xlsx'],
+            ]);
+
+            Excel::import(new ProductsImport, $request->file('file'));
+
+            return redirect()->route('admin.products.index')
+                ->with('success', 'Import started. Products will appear shortly.');
         }
 }
 

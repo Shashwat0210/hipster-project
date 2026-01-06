@@ -8,6 +8,8 @@
             {{ $product->name }} (Stock: {{ $product->stock }})
             <a href="{{ route('admin.products.edit', $product) }}">Edit</a>
 
+            <a href="{{ route('products.import.form') }}">Import Products</a>
+
             <form method="POST" action="{{ route('admin.products.destroy', $product) }}">
                 @csrf 
                 @method('DELETE')

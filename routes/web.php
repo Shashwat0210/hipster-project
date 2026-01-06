@@ -31,6 +31,8 @@ Route::prefix('admin')->group(function () {
     Route::get('/register', [AdminAuthController::class, 'showRegister']);
     Route::post('/register', [AdminAuthController::class, 'register']);
     Route::post('/logout', [AdminAuthController::class, 'logout'])->middleware('auth:admin');
+    Route::get('products/import', [ProductController::class, 'show'])->name('products.import.form');
+    Route::post('products/import', [ProductController::class, 'import'])->name('admin.products.import');
 });
 
     Route::prefix('customer')->group(function () {

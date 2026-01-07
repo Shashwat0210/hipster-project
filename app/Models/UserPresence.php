@@ -14,4 +14,9 @@ class UserPresence extends Model
         'is_online',
         'last_seen_at',
     ];
+
+    protected $casts = [
+        'is_online' => 'boolean',
+        'last_seen_at' => 'datetime',
+    ];
 }

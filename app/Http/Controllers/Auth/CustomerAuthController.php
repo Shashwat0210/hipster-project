@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
+use App\Models\UserPresence;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class CustomerAuthController extends Controller
         ]);
 
         Auth::guard('customer')->login($customer);
+
         return redirect('/customer/dashboard');
     }
 
@@ -47,6 +49,13 @@ class CustomerAuthController extends Controller
 
         if(Auth::guard('customer')->attempt($credentials)){
             $request->session()->regenerate();
+
+            UserPresence::updateOrCreate(
+                ['user_type' => 'customer', 'user_id' => Auth::guard('customer')->id()],
+                ['is_online' => true, 'last_seen_at' =>now()]
+            );
+
+
             return redirect('/customer/dashboard');
         }
 
@@ -57,7 +66,17 @@ class CustomerAuthController extends Controller
 
     public function logout(Request $request)
     {
+        $userId = auth('customer')->id();
+
         Auth::guard('customer')->logout();
+
+        UserPresence::where([
+            'user_type' => 'customer',
+            'user_id' => $userId,
+        ])->update([
+            'is_online' => false,
+            'last_seen_at' => now(),
+        ]);
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

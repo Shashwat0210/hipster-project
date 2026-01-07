@@ -37,7 +37,7 @@ class ProductController extends Controller
             {
             $validated['image'] = $request->file('image')->store('products', 'public');
             } else {
-            $validiated['image'] = 'products/default.png';
+            $validated['image'] = 'products/default.png';
             }
 
             Product::create($validated);
